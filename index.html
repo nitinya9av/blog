@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@nitinya9av</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="header-info">
+                <h1>@nitinya9av</h1>
+                <p class="subtitle">Personal Blog & Dev Journey</p>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </header>
+
+        <!-- Posts List -->
+        <div id="posts-list" class="posts-list">
+            <!-- Posts loaded here -->
+        </div>
+
+        <!-- Post View -->
+        <div id="post-view" class="post-view hidden">
+            <div class="post-header">
+                <button class="back-btn" onclick="showPostsList()">← Back</button>
+            </div>
+            <div id="post-display"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
