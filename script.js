@@ -6,8 +6,28 @@ document.addEventListener('DOMContentLoaded', function() {
     if (posts.length === 0) {
         addStickmanArcherPost();
     }
-    renderPosts();
+    handleRouting();
 });
+
+// Routing system
+function handleRouting() {
+    const hash = window.location.hash;
+    
+    if (hash.startsWith('#post/')) {
+        const slug = hash.replace('#post/', '');
+        const post = posts.find(p => p.slug === slug);
+        if (post) {
+            showPost(post.id);
+        } else {
+            showPostsList();
+        }
+    } else {
+        showPostsList();
+    }
+}
+
+// Handle browser back/forward buttons
+window.addEventListener('hashchange', handleRouting);
 
 // Theme
 function toggleTheme() {
@@ -28,6 +48,7 @@ function loadTheme() {
 function addStickmanArcherPost() {
     const stickmanPost = {
         id: Date.now(),
+        slug: 'stickman-archer',
         title: 'Building Stickman Archer: My Journey with Amazon Q CLI',
         content: `# Building Stickman Archer: My Journey with Amazon Q CLI
 
@@ -333,20 +354,35 @@ What will you create when the only limit is your imagination?
 function showPostsList() {
     document.getElementById('post-view').classList.add('hidden');
     document.getElementById('posts-list').classList.remove('hidden');
+    window.location.hash = '';
+    document.title = '@nitinya9av';
+    renderPosts();
 }
 
 function showPost(postId) {
     const post = posts.find(p => p.id == postId);
-    if (!post) return;
+    if (!post) {
+        showPostsList();
+        return;
+    }
     
     document.getElementById('posts-list').classList.add('hidden');
     document.getElementById('post-view').classList.remove('hidden');
+    window.location.hash = `post/${post.slug}`;
+    document.title = `${post.title} - @nitinya9av`;
     
     document.getElementById('post-display').innerHTML = `
         <div class="post-content">
-            <h1>${escapeHtml(post.title)}</h1>
-            <div class="post-date" style="margin-bottom: 40px; color: var(--text-tertiary); font-size: 14px;">
-                ${formatDate(post.date)}
+            <div class="post-header-info">
+                <h1>${escapeHtml(post.title)}</h1>
+                <div class="post-meta">
+                    <span class="post-date">${formatDate(post.date)}</span>
+                    <button class="share-btn" onclick="sharePost(${post.id})" title="Share this post">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81 1.66 0 3-1.34 3-3s-1.34-3-3-3-3 1.34-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9c-1.66 0-3 1.34-3 3s1.34 3 3 3c.79 0 1.50-.31 2.04-.81l7.12 4.16c-.05.21-.08.43-.08.65 0 1.61 1.31 2.92 2.92 2.92s2.92-1.31 2.92-2.92-1.31-2.92-2.92-2.92z"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
             ${parseMarkdown(post.content)}
         </div>
@@ -463,6 +499,16 @@ function escapeHtml(text) {
     return div.innerHTML;
 }
 
+// Utility function to generate URL-friendly slugs
+function generateSlug(title) {
+    return title
+        .toLowerCase()
+        .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+        .replace(/\s+/g, '-') // Replace spaces with hyphens
+        .replace(/-+/g, '-') // Replace multiple hyphens with single hyphen
+        .trim('-'); // Remove leading/trailing hyphens
+}
+
 // Storage
 function savePosts() {
     localStorage.setItem('blog-posts', JSON.stringify(posts));
@@ -523,3 +569,23 @@ document.addEventListener('keydown', function(e) {
         showPostsList();
     }
 });
+
+// Handle page sharing and direct links
+function getPostUrl(postId) {
+    const post = posts.find(p => p.id == postId);
+    return `${window.location.origin}${window.location.pathname}#post/${post.slug}`;
+}
+
+function sharePost(postId) {
+    const url = getPostUrl(postId);
+    if (navigator.share) {
+        const post = posts.find(p => p.id == postId);
+        navigator.share({
+            title: post.title,
+            url: url
+        });
+    } else {
+        navigator.clipboard.writeText(url);
+        // Could add a toast notification here
+    }
+}

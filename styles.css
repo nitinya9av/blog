@@ -139,6 +139,46 @@ body {
     background: var(--bg-hover);
 }
 
+/* Post header with share functionality */
+.post-header-info {
+    margin-bottom: 40px;
+}
+
+.post-header-info h1 {
+    margin-bottom: 12px;
+}
+
+.post-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text-tertiary);
+    font-size: 14px;
+}
+
+.share-btn {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.share-btn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+.share-btn:active {
+    transform: scale(0.95);
+}
+
 /* Post Content */
 .post-content h1 {
     font-size: 40px;
