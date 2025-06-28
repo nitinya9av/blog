@@ -1,11 +1,10 @@
-let posts = [];
+let posts = []; // Initialize
 
-// Initialize
 document.addEventListener('DOMContentLoaded', function() {
     loadPosts();
     loadTheme();
     if (posts.length === 0) {
-        addSamplePost();
+        addStickmanArcherPost();
     }
     renderPosts();
 });
@@ -14,10 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
 function toggleTheme() {
     const currentTheme = document.documentElement.getAttribute('data-theme');
     const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    
     document.documentElement.setAttribute('data-theme', newTheme);
     localStorage.setItem('theme', newTheme);
-    
     document.querySelector('.theme-icon').textContent = newTheme === 'dark' ? '☀️' : '🌙';
 }
 
@@ -27,57 +24,308 @@ function loadTheme() {
     document.querySelector('.theme-icon').textContent = savedTheme === 'dark' ? '☀️' : '🌙';
 }
 
-// Sample post
-function addSamplePost() {
-    const samplePost = {
+// Stickman Archer development post
+function addStickmanArcherPost() {
+    const stickmanPost = {
         id: Date.now(),
-        title: 'Welcome to My Blog',
-        content: `# Welcome to My Blog
+        title: 'Building Stickman Archer: My Journey with Amazon Q CLI',
+        content: `# Building Stickman Archer: My Journey with Amazon Q CLI
 
-Hey there! I'm @nitinya9av and this is my personal blog where I share my thoughts, projects, and development journey.
+*From Simple Concept to Feature-Rich Gaming Experience*
 
-## What You'll Find Here
+## Introduction
 
-- **Development Projects**: Updates on games and apps I'm building
-- **Learning Notes**: Things I discover while coding
-- **Random Thoughts**: Whatever's on my mind
+When I first heard about the [Amazon Q CLI Build Games Challenge](https://dev.to/aws-builders/how-i-built-a-complete-2d-game-using-amazon-q-developer-cli-beginners-guide-i4f), I knew I wanted to push the boundaries of what could be built through conversational prompting. What started as a simple "Stickman Archer" concept evolved into a comprehensive gaming platform with **6 different game modes**, **progressive difficulty**, **advanced physics**, and **mobile optimization**.
 
-## Current Project: Stickman Archer Game
+This blog documents my complete journey building this game using only Amazon Q CLI prompts—no manual coding required.
 
-I'm currently working on a physics-based archery game using HTML5 Canvas and JavaScript.
+## Why Stickman Archer? The Vision Behind the Game
 
-### Features I've Built:
-- **Arrow Physics**: Realistic gravity and air resistance
-- **Multiple Game Modes**: Classic, Moving Targets, Windy Day
-- **Mobile Support**: Touch controls with haptic feedback
-- **Responsive Design**: Works on all devices
+I chose archery as my core mechanic because it perfectly demonstrates several complex programming concepts:
+- **Realistic physics** (gravity, air resistance, trajectory)
+- **Precision controls** (touch and mouse optimization) 
+- **Visual feedback systems** (particles, trails, hit effects)
+- **Progressive difficulty** (multiple challenge modes)
 
-### Code Example
+My goal was to create something that looked simple but was mechanically deep—a true test of Amazon Q's code generation capabilities.
 
-\`\`\`javascript
-function shootArrow(velocity, angle) {
-    const arrow = new Arrow(x, y, velocity, angle);
-    arrows.push(arrow);
-    
-    // Apply physics
-    arrow.vx = velocity * Math.cos(angle);
-    arrow.vy = velocity * Math.sin(angle);
+## The Build Process: From Concept to Completion
+
+### Phase 1: Foundation and Core Mechanics
+
+**My opening prompt:**
+> Create an HTML5-based Stickman Archer game that works on both web and mobile. Set up the basic project structure with HTML, CSS, and JavaScript files. The game should use HTML5 Canvas for rendering and be responsive for different screen sizes. Include a simple black background and basic game loop structure.
+
+**Amazon Q's Response:**
+Q immediately scaffolded a complete project structure:
+- \`index.html\` with responsive viewport settings
+- \`styles.css\` with mobile-first responsive design  
+- \`game.js\` with 60 FPS game loop and unified input handling
+- \`README.md\` with comprehensive documentation
+
+**My Reflection:**
+This first prompt showed me Q's strength—it doesn't just write code snippets, it thinks architecturally about the entire project structure.
+
+### Phase 2: Advanced Physics Implementation
+
+**Follow-up prompt:**
+> Add realistic physics to the arrow when released. Implement gravity, initial velocity based on bow pull strength, and trajectory calculation. The arrow should arc naturally through the air. Include air resistance for more realistic flight patterns.
+
+**What Q Generated:**
+\`\`\` javascript
+// Physics constants that felt perfectly balanced
+const PHYSICS = {
+    gravity: 0.4,           // Natural arc feeling
+    airResistance: 0.99,    // Gradual slowdown
+    maxVelocity: 25,        // Prevents overpowered shots
+    minVelocity: 3,         // Eliminates weak shots
+    velocityScale: 0.15,    // Intuitive pull-to-power ratio
+    groundLevel: 20
+};
+
+// Realistic physics calculation
+function updateArrowPhysics(arrow) {
+    arrow.vy += PHYSICS.gravity;
+    arrow.vx *= PHYSICS.airResistance;
+    arrow.vy *= PHYSICS.airResistance;
+    arrow.x += arrow.vx;
+    arrow.y += arrow.vy;
 }
 \`\`\`
 
-## What's Next
+**Discovery:**
+Q didn't just implement basic physics—it created a **complete physics system** with constants that felt immediately satisfying to play with.
 
-Planning to add:
-- Sound effects and music
-- Particle systems for visual polish
-- Achievement system
-- Leaderboards
+### Phase 3: Multi-Ring Scoring and Visual Feedback
 
-Thanks for stopping by! Feel free to follow my journey as I build cool stuff. 🚀`,
+**My prompt:**
+> Add targets with multiple scoring rings (bullseye, inner, middle, outer). Each ring should have a different color and point value. Implement precise collision detection and floating score feedback.
+
+**Q's Implementation:**
+\`\`\`javascript
+// Precise circular collision with ring zones
+function checkArrowTargetCollision(arrow, arrowIndex) {
+    const distance = Math.sqrt(dx * dx + dy * dy);
+    let points = 0, ringHit = '';
+    
+    if (distance <= 8) { points = 10; ringHit = 'bullseye'; }
+    else if (distance <= 15) { points = 5; ringHit = 'inner'; }
+    else if (distance <= 22) { points = 3; ringHit = 'middle'; }
+    else if (distance <= 30) { points = 1; ringHit = 'outer'; }
+    
+    if (points > 0) {
+        createHitEffect(centerX, centerY, points, ringHit);
+    }
+}
+\`\`\`
+
+Plus a complete **particle system** with expanding rings, floating score text, and color-coded effects for each ring type.
+
+### Phase 4: The Game-Changer - Multiple Challenge Modes
+
+This is where things got really exciting. I prompted:
+> Create different challenge modes: moving targets, wind effects, obstacles, precision challenges, and time attack modes. Each should unlock progressively as players advance.
+
+**Q's Response Blew My Mind:**
+
+Amazon Q created **6 distinct game modes** with a complete progression system:
+
+#### 🎯 **Classic Mode** (Available from start)
+- Standard archery practice
+- Progressive difficulty scaling
+
+#### 🎪 **Moving Targets** (Unlocks Level 3)
+- Targets with realistic movement physics
+- Boundary collision detection
+- Movement direction indicators
+
+#### 💨 **Windy Day** (Unlocks Level 5) 
+- **Real wind simulation** affecting arrow flight
+- Visual wind indicator with direction/strength
+- Dynamic wind patterns per level
+
+#### 🧱 **Obstacle Course** (Unlocks Level 7)
+- **Three obstacle types** with different physics:
+  - **Walls**: Complete arrow stoppage
+  - **Bouncers**: Energy-conserving deflection  
+  - **Spinners**: Angular deflection based on rotation
+
+#### 🔍 **Precision Challenge** (Unlocks Level 10)
+- Progressively smaller targets
+- Higher skill requirements
+
+#### ⏱️ **Time Attack** (Unlocks Level 12)
+- Individual target timers
+- Race-against-the-clock mechanics
+
+### Phase 5: Mobile Optimization and User Experience
+
+**My prompt:**
+> Optimize everything for mobile devices. Add haptic feedback, improved touch controls, and visual guidance for mobile users.
+
+**Q's Mobile Enhancements:**
+
+#### **Advanced Touch Controls:**
+\`\`\`javascript
+// Intelligent touch area detection
+const distanceFromStickman = Math.sqrt(
+    Math.pow(coords.x - stickmanCenterX, 2) + 
+    Math.pow(coords.y - stickmanCenterY, 2)
+);
+isValidAimingStart = distanceFromStickman <= 150;
+\`\`\`
+
+#### **Haptic Feedback System:**
+\`\`\`javascript
+// Contextual vibration responses
+if (navigator.vibrate && e.type.includes('touch')) {
+    navigator.vibrate(10); // Start aiming
+}
+if (stickman.bowPower > 0.8) {
+    navigator.vibrate(5); // High power warning
+}
+if (successfulHit) {
+    navigator.vibrate(); // Success pattern
+}
+\`\`\`
+
+## The Statistics System: Unexpected Depth
+
+One prompt that surprised me was asking for "comprehensive statistics tracking." Q created:
+
+### **Real-Time Performance Analytics:**
+- Total score and accuracy percentages
+- Ring-specific hit breakdown (bullseye, inner, middle, outer)
+- Current and best streak tracking
+- Recent shots history with details
+- Arrows shot vs targets hit ratios
+
+## Key Prompting Techniques That Worked
+
+### 1. **Progressive Complexity**
+Started simple, then layered complexity:
+\`\`\`
+"Add basic physics" → "Add wind effects" → "Add obstacle collision"
+\`\`\`
+
+### 2. **Specific Visual Requests**
+\`\`\`
+"Add particle bursts with 15 particles for bullseye, 8 for inner ring"
+\`\`\`
+
+### 3. **Platform-Specific Optimization**
+\`\`\`
+"Optimize for mobile with haptic feedback and touch-friendly controls"
+\`\`\`
+Q understood the unique requirements of touch interfaces.
+
+## The Final Product: Beyond My Expectations
+
+What started as a simple archery game became:
+
+### **Technical Achievements:**
+- **1,200+ lines** of optimized JavaScript
+- **6 game modes** with unique mechanics
+- **Advanced physics** rivaling commercial games  
+- **Mobile-first design** with haptic feedback
+- **Real-time statistics** and performance tracking
+- **Progressive unlocking** system
+- **Comprehensive visual effects** system
+
+### **User Experience Features:**
+- **Intuitive controls** on any device
+- **Visual feedback** for every interaction
+- **Clear progression** through levels and modes
+- **Professional UI** with responsive design
+- **Accessibility features** including visual guidance
+
+## Development Automation That Saved Massive Time
+
+Amazon Q handled tasks that typically take developers days:
+
+### **Project Architecture:**
+- Complete file structure with proper separation of concerns
+- Responsive CSS with mobile-first approach
+- Comprehensive documentation generation
+
+### **Complex Physics Implementation:**
+- Gravitational calculations and air resistance
+- Wind simulation with vector mathematics
+- Multi-type collision detection systems
+- Performance-optimized rendering loops
+
+### **Cross-Platform Compatibility:**
+- Unified input handling for mouse and touch
+- Responsive design adapting to any screen size
+- High-DPI display support
+- Browser compatibility testing
+
+## Lessons Learned: The Power of AI-Driven Development
+
+### **What Amazed Me:**
+1. **Architectural Thinking**: Q doesn't just write code—it designs complete systems
+2. **Performance Awareness**: Automatic optimization for mobile devices
+3. **User Experience Focus**: Intuitive controls and feedback systems
+4. **Code Quality**: Clean, maintainable, well-commented code
+5. **Feature Completeness**: Every request resulted in production-ready implementations
+
+### **Effective Prompting Strategies:**
+- **Start with architecture, then add features**
+- **Be specific about user experience goals**
+- **Request performance considerations upfront**
+- **Ask for visual feedback and polish**
+- **Iterate based on playtesting feedback**
+
+### **Where Human Input Remained Crucial:**
+- **Creative direction** and game design decisions
+- **Playtesting** and balance feedback
+- **Feature prioritization** and scope management
+- **Quality assurance** and cross-platform testing
+
+## Try It Yourself
+
+🎮 **[PLAY THE GAME NOW →](https://nitinya9av.github.io/stickman-archer/)**
+
+![Stickman Archer Game Demo](giphy.gif)
+
+### **How to Play:**
+1. **Desktop**: Click and drag from stickman to aim, release to shoot
+2. **Mobile**: Touch and drag with haptic feedback and visual guides
+3. **Progress**: Unlock new modes by completing levels
+4. **Master**: Learn each mode's unique challenges and physics
+
+### **Game Modes Available:**
+- **Classic** → **Moving Targets** → **Windy Day** → **Obstacle Course** → **Precision Challenge** → **Time Attack**
+
+## Final Thoughts: The Future of Game Development
+
+Building this game with Amazon Q CLI was revelatory. In conversations spanning just a few hours, I created a gaming experience that would typically require weeks of development. The AI handled:
+
+- **Complex physics calculations** I would have struggled with
+- **Cross-platform compatibility** that usually requires extensive testing  
+- **Performance optimizations** that take years to master
+- **User experience polish** that separates good games from great ones
+
+This isn't just about faster development—it's about **democratizing game creation**. Anyone with creative ideas can now build sophisticated interactive experiences through natural conversation.
+
+The future of development isn't human vs. AI—it's **human creativity amplified by AI capability**.
+
+## Share Your Experience
+
+Try building your own game with Amazon Q CLI and share it with **#AmazonQCLI**! 
+
+What will you create when the only limit is your imagination?
+
+---
+
+**Repository:** [Check out the full code](https://github.com/nitinya9av/stickman-archer)  
+**#AmazonQCLI #BuildGamesChallenge #GameDev #AI**
+
+*Built entirely through conversational prompting with Amazon Q CLI - no manual coding required.*`,
         date: new Date().toISOString()
     };
     
-    posts.push(samplePost);
+    posts.push(stickmanPost);
     savePosts();
 }
 
@@ -144,24 +392,61 @@ function getPreview(content, maxLength = 120) {
 }
 
 function parseMarkdown(text) {
-    return text
+    // First, preserve code blocks by replacing them with placeholders
+    const codeBlocks = [];
+    let codeBlockIndex = 0;
+    
+    // Extract and preserve code blocks
+    text = text.replace(/```([\s\S]*?)```/g, function(match, content) {
+        const placeholder = `__CODE_BLOCK_${codeBlockIndex}__`;
+        const trimmedContent = content.trim();
+        const escapedContent = escapeHtml(trimmedContent);
+        codeBlocks[codeBlockIndex] = `
+            <div class="code-block-container">
+                <button class="copy-button" onclick="copyCodeBlock(this)" title="Copy code">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M16 1H4c-1.1 0-2 .9-2 2v14h2V3h12V1zm3 4H8c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+                    </svg>
+                </button>
+                <pre><code>${escapedContent}</code></pre>
+            </div>`;
+        codeBlockIndex++;
+        return placeholder;
+    });
+    
+    // Process other markdown elements
+    text = text
+        // Handle headers
         .replace(/^# (.*$)/gm, '<h1>$1</h1>')
         .replace(/^## (.*$)/gm, '<h2>$1</h2>')
         .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+        .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
+        .replace(/^##### (.*$)/gm, '<h5>$1</h5>')
+        .replace(/^###### (.*$)/gm, '<h6>$1</h6>')
         .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        .replace(/(?<!\*)\*([^\*\n]+)\*(?!\*)/g, '<em>$1</em>')
         .replace(/`([^`]+)`/g, '<code>$1</code>')
-        .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+        .replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" style="max-width: 100%; height: auto; border-radius: 8px; margin: 16px 0;">')
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-        .replace(/^- (.*$)/gm, '<li>$1</li>')
-        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>')
         .replace(/^> (.*$)/gm, '<blockquote>$1</blockquote>')
-        .replace(/\n\n/g, '</p><p>')
-        .replace(/^(?!<[hul])/gm, '<p>')
+        .replace(/^- (.*$)/gm, '<li>$1</li>')
+        .replace(/((?:<li>.*?<\/li>\s*)+)/g, '<ul>$1</ul>')
+        .replace(/\n\s*\n/g, '</p><p>')
+        .replace(/^(?!<[h1-6]|<ul|<blockquote|<pre|__CODE_BLOCK_)/gm, '<p>')
         .replace(/(?<!>)$/gm, '</p>')
         .replace(/<p><\/p>/g, '')
-        .replace(/<p>(<[hul])/g, '$1')
-        .replace(/(<\/[hul]>)<\/p>/g, '$1');
+        .replace(/<p>(<[h1-6])/g, '$1')
+        .replace(/(<\/[h1-6]>)<\/p>/g, '$1')
+        .replace(/<p>(<ul)/g, '$1')
+        .replace(/(<\/ul>)<\/p>/g, '$1')
+        .replace(/<p>(<blockquote)/g, '$1')
+        .replace(/(<\/blockquote>)<\/p>/g, '$1');
+    
+    for (let i = 0; i < codeBlocks.length; i++) {
+        text = text.replace(`__CODE_BLOCK_${i}__`, codeBlocks[i]);
+    }
+    
+    return text;
 }
 
 function formatDate(dateString) {
@@ -188,6 +473,48 @@ function loadPosts() {
     if (saved) {
         posts = JSON.parse(saved);
     }
+}
+
+// Copy code block functionality
+function copyCodeBlock(button) {
+    const codeBlock = button.parentElement.querySelector('code');
+    const text = codeBlock.textContent;
+    
+    navigator.clipboard.writeText(text).then(() => {
+        // Visual feedback
+        const originalHTML = button.innerHTML;
+        button.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>`;
+        button.style.color = '#4CAF50';
+        
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.style.color = '';
+        }, 2000);
+    }).catch(() => {
+        // Fallback for older browsers
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        
+        // Visual feedback
+        const originalHTML = button.innerHTML;
+        button.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>
+            </svg>`;
+        button.style.color = '#4CAF50';
+        
+        setTimeout(() => {
+            button.innerHTML = originalHTML;
+            button.style.color = '';
+        }, 2000);
+    });
 }
 
 // Keyboard shortcuts

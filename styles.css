@@ -229,6 +229,44 @@ body {
     text-decoration: underline;
 }
 
+/* Code block with copy button */
+.code-block-container {
+    position: relative;
+    margin: 16px 0;
+}
+
+.copy-button {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--text-secondary);
+    transition: all 0.2s ease;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.copy-button:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+    transform: scale(1.05);
+}
+
+.copy-button:active {
+    transform: scale(0.95);
+}
+
+.code-block-container pre {
+    position: relative;
+    padding-right: 60px; /* Make room for copy button */
+}
+
 /* Utility */
 .hidden {
     display: none !important;
